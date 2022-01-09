@@ -1,0 +1,11 @@
+.Wrapper {
+	display: flex;
+	height: 336px;
+	width: 100%;
+	flex-direction: column;
+	padding: 5px;
+	box-sizing: border-box;
+	border: 2px solid black;
+	border-radius: 4px;
+	background: #fff;
+}

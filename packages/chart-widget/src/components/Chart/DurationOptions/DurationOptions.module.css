@@ -1,0 +1,18 @@
+.Wrapper {
+	display: flex;
+	height: 21px;
+	width: 100%;
+	justify-content: right;
+}
+
+.Wrapper span {
+	display: block;
+	font-weight: bold;
+	font-size: 12px;
+	position: relative;
+	top: 3px;
+}
+
+.Option {
+	margin-left: 3px;
+}
