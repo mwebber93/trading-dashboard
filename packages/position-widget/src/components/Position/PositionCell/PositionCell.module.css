@@ -1,0 +1,18 @@
+.Wrapper {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	font-size: 14px;
+	margin-right: 10px;
+}
+
+.Label {
+	margin-right: 10px;
+	text-align: left;
+	width: 100%;
+}
+
+.Value {
+	font-weight: bold;
+	text-align: left;
+	width: 100%;
+}

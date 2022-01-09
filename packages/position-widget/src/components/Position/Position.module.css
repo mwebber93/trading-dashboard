@@ -1,0 +1,24 @@
+.Wrapper {
+	display: flex;
+	height: 336px;
+	width: 100%;
+	flex-direction: column;
+	border: 2px solid black;
+	border-radius: 4px;
+	font-family: Roboto;
+	padding: 10px 10px 10px 10px;
+	box-sizing: border-box;
+	background: #fff;
+}
+
+.Wrapper h1 {
+	font-size: 24px;
+	margin: 0px 0px 30px 0px;
+}
+
+.Grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	height: 100%;
+	width: 100%;
+}
