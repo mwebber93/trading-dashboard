@@ -1,0 +1,41 @@
+.Wrapper {
+	overflow: auto;
+	height: 100%;
+}
+
+.Wrapper thead th {
+	position: sticky;
+	top: 0;
+	z-index: 1;
+	background: #aaa;
+	box-sizing: border-box;
+}
+
+
+.Table {
+	font-family: Roboto;
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.Table td,
+th {
+	text-align: left;
+	padding: 8px;
+	width: 33%;
+}
+
+.Table tr:nth-child(even) {
+	background-color: #dddddd;
+}
+
+.NoRecords {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 200px;
+	box-sizing: border-box;
+	font-weight: bold;
+	font-family: Roboto;
+}
