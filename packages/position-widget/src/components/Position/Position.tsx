@@ -1,6 +1,13 @@
 import { FC, useCallback, useEffect, useState } from 'react';
 import PositionCell from './PositionCell/PositionCell';
-import { fetchPositionData, formatToDate, formatToGBP, formatToPercent, PositionData, PriceData } from './Position.utils';
+import {
+	fetchPositionData,
+	formatToDate,
+	formatToGBP,
+	formatToPercent,
+	PositionData,
+	PriceData,
+} from './Position.utils';
 import styles from './Position.module.css';
 
 interface Props {}
@@ -13,29 +20,34 @@ const Position: FC<Props> = () => {
 		setPositionData(data ?? {});
 	}, []);
 
-	const handlePriceUpdate = (e: Event) => {
-		const priceData = (e as CustomEvent).detail as PriceData;
-		setPositionData({
-			...positionData,
-			currentPrice: priceData.close,
-			totalValue: priceData.totalValue,
-			todaysPriceChangePercent: priceData.todaysPriceChangePercent,
-			todaysPriceChangeValue: priceData.todaysPriceChangeValue,
-			overallPriceChangePercent: priceData.overallPriceChangePercent,
-			overallPriceChangeValue: priceData.overallPriceChangeValue
-		})
-	}
-
 	useEffect(() => {
 		// Fetch all of the latest data.
 		initialisePosition();
+	}, []);
 
+	const handlePriceUpdate = useCallback(
+		(e: Event) => {
+			const priceData = (e as CustomEvent).detail as PriceData;
+			setPositionData({
+				...positionData,
+				currentPrice: priceData.close,
+				totalValue: priceData.totalValue,
+				todaysPriceChangePercent: priceData.todaysPriceChangePercent,
+				todaysPriceChangeValue: priceData.todaysPriceChangeValue,
+				overallPriceChangePercent: priceData.overallPriceChangePercent,
+				overallPriceChangeValue: priceData.overallPriceChangeValue,
+			});
+		},
+		[positionData]
+	);
+
+	useEffect(() => {
 		window.addEventListener('price-update', handlePriceUpdate);
 
 		return () => {
 			window.removeEventListener('price-update', handlePriceUpdate);
-		  };
-	}, []);
+		};
+	}, [handlePriceUpdate]);
 
 	return (
 		<div className={styles.Wrapper}>
