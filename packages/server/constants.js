@@ -1,5 +1,5 @@
-const PRICE_UPDATE_MESSAGE_TYPE = 'latest_price_update';
+const PRICE_UPDATE_MESSAGE = 'latest_price_update';
 
 module.exports = {
-	PRICE_UPDATE_MESSAGE_TYPE,
+	PRICE_UPDATE_MESSAGE,
 };

@@ -4,7 +4,7 @@
 	"description": "Mock server for the trading dashboard",
 	"main": "index.js",
 	"scripts": {
-		"start": "node mockServer.js",
+		"start": "node index.js",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"author": "Matt Webber",
@@ -15,6 +15,7 @@
 		"express": "^4.17.2",
 		"jsonschema": "^1.4.0",
 		"moment": "^2.29.1",
+		"uuid": "^8.3.2",
 		"ws": "^8.4.0"
 	}
 }

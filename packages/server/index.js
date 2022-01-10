@@ -1,12 +1,13 @@
 const express = require('express');
-const ws = require('ws');
 const moment = require('moment');
+const uuid = require('uuid');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 
 const { initialiseTradeRoutes } = require('./tradeService/routes');
 const { initialiseTradeSimulator } = require('./tradeSimulator');
+const { initialiseWSS } = require('./webSocketServer');
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -19,6 +20,7 @@ let mockData = {
 		unitsHeld: 10,
 		orders: [
 			{
+				id: uuid.v4(),
 				type: 'buy',
 				quantity: 3,
 				price: 1000,
@@ -29,6 +31,9 @@ let mockData = {
 		],
 	},
 };
+
+// Initialise web socket server.
+initialiseWSS();
 
 // Initialise the routes of each service.
 initialiseTradeRoutes(app, mockData);
@@ -43,21 +48,5 @@ app.listen(port, 'localhost', (err) => {
 	console.log(`Mock server is running on port ${port}...`);
 });
 
-// Initialise web sockets
-const wsPort = 4001;
-const webSocketServer = new ws.Server({ port: wsPort });
-
-webSocketServer.on('connection', (ws) => {
-	ws.on('message', (msg) => {
-		console.log('message received', msg);
-	});
-
-	ws.on('close', () => {
-		console.log('websocket was closed');
-	});
-});
-
-console.log(`Web socket server is running on port ${wsPort}...`);
-
 // Initialise trade simulator.
-initialiseTradeSimulator(webSocketServer, mockData);
+initialiseTradeSimulator(mockData);

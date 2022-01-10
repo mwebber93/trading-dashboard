@@ -1,7 +1,7 @@
-const ws = require('ws');
 const moment = require('moment');
 
-const { PRICE_UPDATE_MESSAGE_TYPE } = require('./constants');
+const { broadcastMessage } = require('./webSocketServer');
+const { PRICE_UPDATE_MESSAGE, ORDER_EXECUTED_MESSAGE } = require('./constants');
 const { roundTo2DP, calculateOverallPriceChange, calculateTodaysPriceChange } = require('./helpers');
 
 const initialiseData = (mockData) => {
@@ -84,30 +84,36 @@ const actionOutstandingOrders = (newPrice, mockData) => {
 };
 
 const triggerBuyOrder = (order, mockData) => {
-	const currentPrice = data.priceData[data.priceData.length - 1].close;
+	const currentPrice = mockData.priceData[mockData.priceData.length - 1].close;
 	const { quantity } = order;
 	const totalPrice = roundTo2DP(quantity * currentPrice);
 	if (mockData.traderInfo.cashAvailable >= totalPrice) {
 		mockData.traderInfo.cashAvailable -= totalPrice;
 		mockData.traderInfo.unitsHeld += quantity;
+		broadcastMessage(ORDER_EXECUTED_MESSAGE, {
+			id: order.id,
+		});
 		return true;
 	}
 	return false;
 };
 
 const triggerSellOrder = (order, mockData) => {
-	const currentPrice = data.priceData[data.priceData.length - 1].close;
+	const currentPrice = mockData.priceData[mockData.priceData.length - 1].close;
 	const { quantity } = order;
 	const totalPrice = roundTo2DP(quantity * currentPrice);
-	if (mockData.traderInfo.unitsHeld < quantity) {
+	if (mockData.traderInfo.unitsHeld >= quantity) {
 		mockData.traderInfo.cashAvailable += totalPrice;
 		mockData.traderInfo.unitsHeld -= quantity;
+		broadcastMessage(ORDER_EXECUTED_MESSAGE, {
+			id: order.id,
+		});
 		return true;
 	}
 	return false;
 };
 
-const simulateTrading = (wss, mockData) => {
+const simulateTrading = (mockData) => {
 	setInterval(() => {
 		// Generate new price changes and broadcast them.
 		const currentDateTime = moment().set({ milliseconds: 0, seconds: 0 });
@@ -126,23 +132,13 @@ const simulateTrading = (wss, mockData) => {
 			totalValue: roundTo2DP(mockData.traderInfo.unitsHeld * newPriceData.close),
 		};
 
-		wss.clients.forEach((client) => {
-			if (client.readyState === ws.OPEN) {
-				client.send(
-					JSON.stringify({
-						type: PRICE_UPDATE_MESSAGE_TYPE,
-						data: broadcastData,
-					})
-				);
-			}
-		});
-		console.log('Latest price data has been broadcasted.');
+		broadcastMessage(PRICE_UPDATE_MESSAGE, broadcastData);
 	}, 60 * 1000);
 };
 
-const initialiseTradeSimulator = (wss, mockData) => {
+const initialiseTradeSimulator = (mockData) => {
 	initialiseData(mockData);
-	simulateTrading(wss, mockData);
+	simulateTrading(mockData);
 };
 
 module.exports = { initialiseTradeSimulator };
