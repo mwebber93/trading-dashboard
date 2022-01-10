@@ -1,11 +1,6 @@
 import { FC } from 'react';
+import { formatToGBP, Order } from '../OrderBook.utils';
 import styles from './OrderBookTable.module.css';
-
-export type Order = {
-	type: 'buy' | 'sell';
-	quantity: number;
-	price: number;
-};
 
 interface Props {
 	orders: Order[];
@@ -23,10 +18,10 @@ const OrderBookTable: FC<Props> = ({ orders }) => {
 					</tr>
 				</thead>
 				<tbody>
-					{orders.map((order) => (
-						<tr>
+					{orders.map((order, index) => (
+						<tr key={index}>
 							<td>{order.type}</td>
-							<td>{order.price}</td>
+							<td>{formatToGBP(order.price)}</td>
 							<td>{order.quantity}</td>
 						</tr>
 					))}
