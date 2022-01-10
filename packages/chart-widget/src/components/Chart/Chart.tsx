@@ -1,6 +1,12 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { chartOptions, dispatchPriceUpdateEvent, fetchLatestPrices, PriceData, PRICE_UPDATE_TYPE } from './Chart.utils';
+import {
+	chartOptions,
+	dispatchPriceUpdateEvent,
+	fetchLatestPrices,
+	PriceData,
+	PRICE_UPDATE_MESSAGE,
+} from './Chart.utils';
 import styles from './Chart.module.css';
 
 interface Props {}
@@ -32,7 +38,7 @@ const Chart: FC<Props> = () => {
 
 		ws.current.onmessage = (e) => {
 			const message = JSON.parse(e.data);
-			if (message.type === PRICE_UPDATE_TYPE) {
+			if (message.type === PRICE_UPDATE_MESSAGE) {
 				const latestPricesCopy = [...latestPrices];
 				// Lose the oldest price.
 				latestPricesCopy.shift();

@@ -8,7 +8,7 @@ export type PriceData = {
 	min: number;
 };
 
-export const PRICE_UPDATE_TYPE = "latest_price_update";
+export const PRICE_UPDATE_MESSAGE = "latest_price_update";
 
 export const chartOptions = {
 	chart: {
