@@ -1,5 +1,6 @@
 const express = require('express');
 const ws = require('ws');
+const moment = require('moment');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
@@ -11,7 +12,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // This is where we will store our mock data.
-let mockData = [];
+let mockData = {
+	priceData: [],
+	traderInfo: {
+		cashAvailable: 1000,
+		unitsHeld: 10,
+		orders: [
+			{
+				type: 'buy',
+				quantity: 3,
+				price: 1000,
+				executed: true,
+				timestamp: moment().subtract(1, 'day').set({ milliseconds: 0, seconds: 0 }).valueOf(),
+			}
+		],
+	},
+};
 
 // Initialise the routes of each service.
 initialiseTradeRoutes(app, mockData);
@@ -44,5 +60,3 @@ console.log(`Web socket server is running on port ${wsPort}...`);
 
 // Initialise trade simulator.
 initialiseTradeSimulator(webSocketServer, mockData);
-
-

@@ -1,14 +1,14 @@
 const moment = require('moment');
 
-const getPricesForLastHour = (data) => {
+const getPricesForLastHour = (priceData) => {
 	const startTime = moment().subtract(1, 'hour').set({ milliseconds: 0, seconds: 0 }).valueOf();
-	const startIndex = data.findIndex(({ datetime }) => datetime === startTime);
-	const priceData = data.slice(startIndex);
-	return priceData;
+	const startIndex = priceData.findIndex(({ timestamp }) => timestamp === startTime);
+	const priceDataForLastHour = priceData.slice(startIndex);
+	return priceDataForLastHour;
 };
 
 const getLatestPricesController = (req, res, data) => {
-	const priceDataForLastHour = getPricesForLastHour(data);
+	const priceDataForLastHour = getPricesForLastHour(data.priceData);
 	res.jsonp(priceDataForLastHour);
 };
 
