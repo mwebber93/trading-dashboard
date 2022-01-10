@@ -24,7 +24,9 @@ export type PriceData = {
 	overallPriceChangeValue: number;
 	overallPriceChangePercent: number;
 	totalValue: number;
-}
+};
+
+export const ORDER_EXECUTED_MESSAGE = 'order_executed';
 
 export const fetchPositionData = async (): Promise<PositionData | null> => {
 	try {

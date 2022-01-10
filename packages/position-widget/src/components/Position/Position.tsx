@@ -1,10 +1,11 @@
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import PositionCell from './PositionCell/PositionCell';
 import {
 	fetchPositionData,
 	formatToDate,
 	formatToGBP,
 	formatToPercent,
+	ORDER_EXECUTED_MESSAGE,
 	PositionData,
 	PriceData,
 } from './Position.utils';
@@ -13,6 +14,7 @@ import styles from './Position.module.css';
 interface Props {}
 
 const Position: FC<Props> = () => {
+	const ws = useRef<WebSocket | null>(null);
 	const [positionData, setPositionData] = useState<Partial<PositionData>>({});
 
 	const initialisePosition = useCallback(async () => {
@@ -23,7 +25,27 @@ const Position: FC<Props> = () => {
 	useEffect(() => {
 		// Fetch all of the latest data.
 		initialisePosition();
+
+		// Initialise websocket connection to get real-time updates.
+		ws.current = new WebSocket('ws://localhost:4001/');
+		const wsCurrent = ws.current;
+
+		return () => {
+			wsCurrent.close();
+		};
 	}, []);
+
+	useEffect(() => {
+		if (!ws.current) return;
+
+		ws.current.onmessage = (e: MessageEvent) => {
+			const message = JSON.parse(e.data);
+			if (message.type === ORDER_EXECUTED_MESSAGE) {
+				// If the order is executed, then refresh the position data.
+				initialisePosition();
+			}
+		};
+	}, [positionData]);
 
 	const handlePriceUpdate = useCallback(
 		(e: Event) => {
