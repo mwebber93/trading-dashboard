@@ -20,9 +20,6 @@ const Chart: FC<Props> = () => {
 
 		// Initialise websocket connection to get real-time updates.
 		ws.current = new WebSocket('ws://localhost:4001/');
-		ws.current.onopen = () => console.log('ws opened');
-		ws.current.onclose = () => console.log('ws closed');
-
 		const wsCurrent = ws.current;
 
 		return () => {
