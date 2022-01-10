@@ -56,24 +56,26 @@ const generatePriceData = (openingPrice, isHistorical, mockData) => {
 
 const actionOutstandingOrders = (newPrice, mockData) => {
 	mockData.traderInfo.orders = mockData.traderInfo.orders.map((order) => {
-		const { executed, price, type } = order;
-		if (executed) {
+		const { triggered, price, type } = order;
+		if (triggered) {
 			return order;
 		}
 
 		if (type === 'buy' && price >= newPrice) {
 			// if the buy order's price is breached then trigger the purchase.
-			triggerBuyOrder(order, mockData);
+			const succeeded = triggerBuyOrder(order, mockData);
 			return {
 				...order,
-				executed: true,
+				triggered: true,
+				succeeded,
 			};
 		} else if (type === 'sell' && price <= newPrice) {
 			// if the sell order's price is breached then trigger the sale.
-			triggerSellOrder(order, mockData);
+			const succeeded = triggerSellOrder(order, mockData);
 			return {
 				...order,
-				executed: true,
+				triggered: true,
+				succeeded,
 			};
 		}
 
@@ -82,15 +84,27 @@ const actionOutstandingOrders = (newPrice, mockData) => {
 };
 
 const triggerBuyOrder = (order, mockData) => {
-	const { quantity, price } = order;
-	mockData.traderInfo.cashAvailable -= roundTo2DP(quantity * price);
-	mockData.traderInfo.unitsHeld += quantity;
+	const currentPrice = data.priceData[data.priceData.length - 1].close;
+	const { quantity } = order;
+	const totalPrice = roundTo2DP(quantity * currentPrice);
+	if (mockData.traderInfo.cashAvailable >= totalPrice) {
+		mockData.traderInfo.cashAvailable -= totalPrice;
+		mockData.traderInfo.unitsHeld += quantity;
+		return true;
+	}
+	return false;
 };
 
 const triggerSellOrder = (order, mockData) => {
-	const { quantity, price } = order;
-	mockData.traderInfo.cashAvailable += roundTo2DP(quantity * price);
-	mockData.traderInfo.unitsHeld -= quantity;
+	const currentPrice = data.priceData[data.priceData.length - 1].close;
+	const { quantity } = order;
+	const totalPrice = roundTo2DP(quantity * currentPrice);
+	if (mockData.traderInfo.unitsHeld < quantity) {
+		mockData.traderInfo.cashAvailable += totalPrice;
+		mockData.traderInfo.unitsHeld -= quantity;
+		return true;
+	}
+	return false;
 };
 
 const simulateTrading = (wss, mockData) => {

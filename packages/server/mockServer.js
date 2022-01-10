@@ -22,9 +22,10 @@ let mockData = {
 				type: 'buy',
 				quantity: 3,
 				price: 1000,
-				executed: true,
+				triggered: true,
+				succeeded: true,
 				timestamp: moment().subtract(1, 'day').set({ milliseconds: 0, seconds: 0 }).valueOf(),
-			}
+			},
 		],
 	},
 };

@@ -5,12 +5,12 @@ const getTraderPosition = (data) => {
 	const { cashAvailable, unitsHeld, orders } = data.traderInfo;
 	const currentPrice = data.priceData[data.priceData.length - 1].close;
 
-	const executedOrders = orders.filter(({ executed }) => executed);
+	const successfulOrders = orders.filter(({ triggered, succeeded }) => triggered && succeeded);
 
 	// Calculate total cost.
-	const executedBuyOrders = executedOrders.filter((order) => order.type === 'buy');
-	const buyOrdersTotalCost = executedBuyOrders.reduce((accumulator, order) => accumulator + order.price, 0);
-	const averageCost = buyOrdersTotalCost / executedBuyOrders.length;
+	const successfulBuyOrders = successfulOrders.filter((order) => order.type === 'buy');
+	const buyOrdersTotalCost = successfulBuyOrders.reduce((accumulator, order) => accumulator + order.price, 0);
+	const averageCost = buyOrdersTotalCost / successfulBuyOrders.length;
 	const totalCost = averageCost * unitsHeld;
 
 	// calculate today's price change as a percentage.
@@ -20,9 +20,9 @@ const getTraderPosition = (data) => {
 
 	// calculate overall gain (since first trade) as a percentage.
 
-	const firstDealTimestamp = executedOrders[0].timestamp;
-	const lastDealTimestamp = executedOrders[executedOrders.length - 1].timestamp;
-	const totalDeals = executedOrders.length;
+	const firstDealTimestamp = successfulOrders[0].timestamp;
+	const lastDealTimestamp = successfulOrders[successfulOrders.length - 1].timestamp;
+	const totalDeals = successfulOrders.length;
 
 	return {
 		cashAvailable,
