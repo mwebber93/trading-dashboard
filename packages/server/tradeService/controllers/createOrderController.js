@@ -22,16 +22,28 @@ const createNewOrderController = (req, res, data) => {
 			res.status(400).jsonp({ message: errors[0].message });
 		} else {
 			const { type, quantity, price } = req.body;
-			const { cashAvailable, unitsHeld } = data.traderInfo;
+			const { cashAvailable, orders, unitsHeld } = data.traderInfo;
 
-			// Don't allow the trader to place an order they don't have the cash for.
-			const cashRequired = roundTo2DP(quantity * price);
+			// Don't allow the trader to place a buy order they don't have the cash for. This includes any outstanding orders.
+			const cashRequired =
+				orders
+					.filter((order) => !order.executed)
+					.reduce((accumulator, order) => {
+						return accumulator + roundTo2DP(order.price * order.quantity);
+					}, 0) + roundTo2DP(quantity * price);
+			// Don't allow the trader to oversell units. This includes any oustanding orders.
+			const unitsRequired =
+				orders
+					.filter((order) => !order.executed)
+					.reduce((accumulator, order) => {
+						return accumulator + order.quantity;
+					}, 0) + quantity;
 			if (type === 'buy' && cashRequired > cashAvailable) {
-				res.status(400).jsonp({
+				return res.status(400).jsonp({
 					message: 'You have insufficient funds for this purchase.',
 				});
-			} else if (type === 'sell' && unitsHeld < quantity) {
-				res.status(400).jsonp({
+			} else if (type === 'sell' && unitsRequired > unitsHeld) {
+				return res.status(400).jsonp({
 					message: 'You cannot sell more than you own.',
 				});
 			}
@@ -44,10 +56,10 @@ const createNewOrderController = (req, res, data) => {
 				timestamp: moment().set({ milliseconds: 0, seconds: 0 }).valueOf(),
 			});
 
-			res.status(200).jsonp({ message: 'OK' });
+			return res.status(200).jsonp({ message: 'OK' });
 		}
-	} catch (e) {
-		console.error('internal server error');
+	} catch (error) {
+		console.error('internal server error', error);
 		res.status(500).send();
 	}
 };

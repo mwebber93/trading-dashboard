@@ -10,7 +10,7 @@ const initialiseData = (mockData) => {
 	const stopDateTime = moment();
 	const currentDateTime = startDateTime;
 	while (startDateTime <= stopDateTime) {
-		const priceData = generatePriceData(price);
+		const priceData = generatePriceData(price, true);
 		price = priceData.close;
 
 		mockData.priceData.push({
@@ -23,7 +23,7 @@ const initialiseData = (mockData) => {
 	console.log('Mock data has been generated...');
 };
 
-const generatePriceData = (openingPrice) => {
+const generatePriceData = (openingPrice, isHistorical, mockData) => {
 	let maxPrice = openingPrice;
 	let minPrice = openingPrice;
 	let price = openingPrice;
@@ -33,6 +33,11 @@ const generatePriceData = (openingPrice) => {
 		const isPositive = Math.random() < 0.5;
 		price = isPositive ? price + fluctuation : price - fluctuation;
 		price = roundTo2DP(price);
+
+		// If not generating historical price data then, if triggered, ensure any order entries are committed.
+		if (!isHistorical) {
+			actionOutstandingOrders(price, mockData);
+		}
 
 		if (price > maxPrice) {
 			maxPrice = price;
@@ -49,13 +54,53 @@ const generatePriceData = (openingPrice) => {
 	};
 };
 
+const actionOutstandingOrders = (newPrice, mockData) => {
+	mockData.traderInfo.orders = mockData.traderInfo.orders.map((order) => {
+		const { executed, price, type } = order;
+		if (executed) {
+			return order;
+		}
+
+		if (type === 'buy' && price >= newPrice) {
+			// if the buy order's price is breached then trigger the purchase.
+			triggerBuyOrder(order, mockData);
+			return {
+				...order,
+				executed: true,
+			};
+		} else if (type === 'sell' && price <= newPrice) {
+			// if the sell order's price is breached then trigger the sale.
+			triggerSellOrder(order, mockData);
+			return {
+				...order,
+				executed: true,
+			};
+		}
+
+		return order;
+	});
+};
+
+const triggerBuyOrder = (order, mockData) => {
+	const { quantity, price } = order;
+	mockData.traderInfo.cashAvailable -= roundTo2DP(quantity * price);
+	mockData.traderInfo.unitsHeld += quantity;
+};
+
+const triggerSellOrder = (order, mockData) => {
+	const { quantity, price } = order;
+	mockData.traderInfo.cashAvailable += roundTo2DP(quantity * price);
+	mockData.traderInfo.unitsHeld -= quantity;
+};
+
 const simulateTrading = (wss, mockData) => {
 	setInterval(() => {
+		// Generate new price changes and broadcast them.
 		const currentDateTime = moment().set({ milliseconds: 0, seconds: 0 });
 		const currentPrice = mockData.priceData[mockData.priceData.length - 1].close;
 		const newPriceData = {
 			timestamp: currentDateTime.valueOf(),
-			...generatePriceData(currentPrice)
+			...generatePriceData(currentPrice, false, mockData),
 		};
 		mockData.priceData.push(newPriceData);
 
@@ -64,7 +109,7 @@ const simulateTrading = (wss, mockData) => {
 			...newPriceData,
 			...calculateOverallPriceChange(mockData),
 			...calculateTodaysPriceChange(mockData),
-			totalValue: roundTo2DP(mockData.traderInfo.unitsHeld*newPriceData.close),
+			totalValue: roundTo2DP(mockData.traderInfo.unitsHeld * newPriceData.close),
 		};
 
 		wss.clients.forEach((client) => {
@@ -72,7 +117,7 @@ const simulateTrading = (wss, mockData) => {
 				client.send(
 					JSON.stringify({
 						type: PRICE_UPDATE_MESSAGE_TYPE,
-						data: broadcastData
+						data: broadcastData,
 					})
 				);
 			}
