@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 export type PriceData = {
-	datetime: number;
+	timestamp: number;
 	open: number;
 	close: number;
 	max: number;
@@ -24,7 +24,7 @@ export const chartOptions = {
 		foreColor: '#000',
 	},
 	title: {
-		text: 'FKC/GBP - Fakecoin GB Pound Latest Hour',
+		text: 'FKC/GBP - Last Hour',
 		align: 'left' as const,
 	},
 	tooltip: {
@@ -58,3 +58,8 @@ export const fetchLatestPrices = async (): Promise<PriceData[] | null> => {
 		return null;
 	}
 };
+
+export const dispatchPriceUpdateEvent = (latestPriceData: PriceData) => {
+	const priceUpdateEvent = new CustomEvent('price-update', { detail: latestPriceData });
+	window.dispatchEvent(priceUpdateEvent);
+}

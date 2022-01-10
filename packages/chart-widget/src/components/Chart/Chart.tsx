@@ -1,6 +1,6 @@
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import { chartOptions, fetchLatestPrices, PriceData, PRICE_UPDATE_TYPE } from './Chart.utils';
+import { chartOptions, dispatchPriceUpdateEvent, fetchLatestPrices, PriceData, PRICE_UPDATE_TYPE } from './Chart.utils';
 import styles from './Chart.module.css';
 
 interface Props {}
@@ -42,6 +42,8 @@ const Chart: FC<Props> = () => {
 				// Append the latest price.
 				latestPricesCopy.push(message.data);
 				setLatestPrices(latestPricesCopy);
+				// Dispatch an event for other widgets to get new the price data.
+				dispatchPriceUpdateEvent(message.data);
 			}
 		};
 	}, [latestPrices]);
@@ -51,7 +53,7 @@ const Chart: FC<Props> = () => {
 			{
 				name: 'candle',
 				data: latestPrices.map((priceData) => ({
-					x: priceData.datetime,
+					x: priceData.timestamp,
 					y: [priceData.open, priceData.max, priceData.min, priceData.close],
 				})),
 			},

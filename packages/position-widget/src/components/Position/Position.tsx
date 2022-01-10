@@ -1,22 +1,66 @@
-import { FC } from 'react';
+import { FC, useCallback, useEffect, useState } from 'react';
 import PositionCell from './PositionCell/PositionCell';
+import { fetchPositionData, formatToDate, formatToGBP, formatToPercent, PositionData, PriceData } from './Position.utils';
 import styles from './Position.module.css';
 
 interface Props {}
 
 const Position: FC<Props> = () => {
+	const [positionData, setPositionData] = useState<Partial<PositionData>>({});
+
+	const initialisePosition = useCallback(async () => {
+		const data = await fetchPositionData();
+		setPositionData(data ?? {});
+	}, []);
+
+	const handlePriceUpdate = (e: Event) => {
+		const priceData = (e as CustomEvent).detail as PriceData;
+		setPositionData({
+			...positionData,
+			currentPrice: priceData.close,
+			totalValue: priceData.totalValue,
+			todaysPriceChangePercent: priceData.todaysPriceChangePercent,
+			todaysPriceChangeValue: priceData.todaysPriceChangeValue,
+			overallPriceChangePercent: priceData.overallPriceChangePercent,
+			overallPriceChangeValue: priceData.overallPriceChangeValue
+		})
+	}
+
+	useEffect(() => {
+		// Fetch all of the latest data.
+		initialisePosition();
+
+		window.addEventListener('price-update', handlePriceUpdate);
+
+		return () => {
+			window.removeEventListener('price-update', handlePriceUpdate);
+		  };
+	}, []);
+
 	return (
 		<div className={styles.Wrapper}>
 			<h1>Position</h1>
 			<div className={styles.Grid}>
-				<PositionCell label="Units held:" value="56.99" />
-				<PositionCell label="Day gain/loss:" value="+£152.97 (+2.72%)" />
-				<PositionCell label="Current price:" value="£7,323.67" />
-				<PositionCell label="First deal:" value="4 January 2022" />
-				<PositionCell label="Total value:" value="£417,375.95" />
-				<PositionCell label="Last deal:" value="7th January 2022" />
-				<PositionCell label="Overall gain/loss:" value="+£2,145.56 (+11.72%)" />
-				<PositionCell label="Total deals" value="4" />
+				<PositionCell label="Cash available:" value={formatToGBP(positionData?.cashAvailable)} />
+				<PositionCell
+					label="Day price change:"
+					value={`${formatToGBP(positionData?.todaysPriceChangeValue)} (${formatToPercent(
+						positionData?.todaysPriceChangePercent
+					)})`}
+				/>
+				<PositionCell label="Units held:" value={(positionData?.unitsHeld ?? 0).toString()} />
+				<PositionCell
+					label="Overall price change:"
+					value={`${formatToGBP(positionData?.overallPriceChangeValue)} (${formatToPercent(
+						positionData?.overallPriceChangePercent
+					)})`}
+				/>
+				<PositionCell label="Current price:" value={formatToGBP(positionData?.currentPrice)} />
+				<PositionCell label="First deal:" value={formatToDate(positionData?.firstDealTimestamp)} />
+				<PositionCell label="Total value:" value={formatToGBP(positionData?.totalValue)} />
+				<PositionCell label="Last deal:" value={formatToDate(positionData?.lastDealTimestamp)} />
+				<PositionCell label="Total cost:" value={formatToGBP(positionData?.totalCost)} />
+				<PositionCell label="Total deals:" value={(positionData?.totalDeals ?? 0).toString()} />
 			</div>
 		</div>
 	);
