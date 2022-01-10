@@ -1,8 +1,11 @@
 const moment = require('moment');
+const uuid = require('uuid');
 const Validator = require('jsonschema').Validator;
 const validator = new Validator();
 
+const { broadcastMessage } = require('../../webSocketServer');
 const { roundTo2DP } = require('../../helpers');
+const { NEW_ORDER_MESSAGE } = require('../../constants');
 
 const orderSchema = {
 	id: '/order',
@@ -22,15 +25,26 @@ const createNewOrderController = (req, res, data) => {
 			res.status(400).jsonp({ message: errors[0].message });
 		} else {
 			const { type, quantity, price } = req.body;
-
-			data.traderInfo.orders.push({
+			const newOrder = {
+				id: uuid.v4(),
 				type,
 				quantity,
-				price,
+				price: roundTo2DP(price),
 				triggered: false,
 				succeeded: false,
 				timestamp: moment().set({ milliseconds: 0, seconds: 0 }).valueOf(),
-			});
+			};
+
+			data.traderInfo.orders.push(newOrder);
+
+			const broadcastData = {
+				id: newOrder.id,
+				type: newOrder.type,
+				quantity: newOrder.quantity,
+				price: newOrder.price,
+			};
+			// Broadcast new order.
+			broadcastMessage(NEW_ORDER_MESSAGE, broadcastData);
 
 			return res.status(200).jsonp({ message: 'OK' });
 		}
