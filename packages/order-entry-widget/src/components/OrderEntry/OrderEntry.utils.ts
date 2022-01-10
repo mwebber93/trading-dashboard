@@ -46,6 +46,6 @@ export const createOrder = async (data: OrderData): Promise<{ success: boolean; 
 			message,
 		};
 	} catch (error) {
-		return { success: false, message: 'internal server error' };
+		return { success: false, message: 'Server error.' };
 	}
 };
