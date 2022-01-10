@@ -1,0 +1,19 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "Mock server for the trading dashboard",
+	"main": "index.js",
+	"scripts": {
+		"start:server": "node mockServer.js",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"author": "Matt Webber",
+	"license": "ISC",
+	"dependencies": {
+		"body-parser": "^1.19.1",
+		"cors": "^2.8.5",
+		"express": "^4.17.2",
+		"moment": "^2.29.1",
+		"ws": "^8.4.0"
+	}
+}
