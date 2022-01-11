@@ -1,7 +1,7 @@
 
 # Introduction
 
-This is a simple trading dashboard application built by Matt Webber. It uses Module Federation as a way of stitching together multiple React widget applications at runtime. The application is powered by a mock server created to supply it with mock data via WebSockets (for real-time updates) and REST endpoints (for initial information fetching).
+This is a simple trading dashboard application that uses Module Federation as a way of stitching together multiple React widget applications at runtime. The application is powered by a mock server created to supply it with mock data via WebSockets (for real-time updates) and REST endpoints (for initial information fetching).
 
 Each widget serves a different purpose:
 
