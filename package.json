@@ -4,7 +4,8 @@
 	"description": "This project contains a trading dashboard built up of several different widgets.",
 	"main": "index.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"cypress:open": "cypress open"
 	},
 	"author": "Matthew Webber",
 	"license": "ISC",
@@ -12,6 +13,7 @@
 		"./packages/*"
 	],
 	"devDependencies": {
+		"cypress": "^9.2.1",
 		"prettier": "2.5.1"
 	}
 }

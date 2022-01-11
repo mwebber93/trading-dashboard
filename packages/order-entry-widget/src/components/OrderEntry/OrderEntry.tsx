@@ -86,9 +86,15 @@ const OrderEntry: FC<Props> = () => {
 					</div>
 				</div>
 				<label>Quantity:</label>
-				<input type="text" className={styles.Input} value={quantity} onChange={handleQuantityChange} />
+				<input
+					type="text"
+					className={styles.Input}
+					name="quantity"
+					value={quantity}
+					onChange={handleQuantityChange}
+				/>
 				<label>Price (GBP):</label>
-				<input type="text" className={styles.Input} value={price} onChange={handlePriceChange} />
+				<input type="text" className={styles.Input} name="price" value={price} onChange={handlePriceChange} />
 				<input type="submit" value="Place Order" className={styles.Submit} />
 				{error && <span className={styles.Error}>{error}</span>}
 			</form>

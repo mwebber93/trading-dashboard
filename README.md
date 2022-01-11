@@ -44,7 +44,7 @@ Follow these steps in order to get your application running locally.
 
 # Testing
  - For **unit testing** we have combined the use of **Jest** & **React Testing Library** for component testing. Also **Jest** by itself for testing business logic. Usually there would be a strict goal for high test coverage throughout the application but as this just a simple app there we have just put a simple example of component testing within the Position widget.
- - For **E2E testing** we are using **Cypress**. An example of this can be seen in the Dashboard package.
+ - For **E2E testing** we are using **Cypress**. An example of this can be seen in the root of the project covering the Order Entry widget. To start Cypress run `npm run start:cypress` in the root of the project.
 
 # Possible Future Improvements
 
@@ -52,5 +52,6 @@ Follow these steps in order to get your application running locally.
  - Introduce a library for Forms management such as **Formik** or **React Hook Form**.
  - Look at creating a shared component library building on top of something like **Material-UI**. This could then be shared across the widgets as necessary to encourage code re-use.
  - Consolidating common code such as API fetching into a shared package.
+ - Increase integration tests and unit testing coverage across the application.
  - Introducing **Lerna** for monorepo build and versioning support.
  - Introduce **CI/CD** to streamline the build and release process.
