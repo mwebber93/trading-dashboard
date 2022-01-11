@@ -43,6 +43,7 @@
 	},
 	"devDependencies": {
 		"@craco/craco": "^6.4.3",
+		"jest-watch-typeahead": "^0.6.5",
 		"typescript-plugin-css-modules": "^3.4.0"
 	}
 }
