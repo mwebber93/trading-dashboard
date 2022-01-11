@@ -30,6 +30,7 @@ Follow these steps in order to get your application running locally.
  - **React** for the view layer.
  - **TypeScript** to gain strong typing at build time.
  - **CSS Modules** to prevent CSS from accidentally leaking out from one widget to another.
+ - **CSS Flexbox/Grid** to enable a mobile responsive design.
  - **Webpack 5** for bundling the application and to enable **Module Federation** based Microfrontends.
  - **ESLint** for linting the application.
  - **Prettier** for code style consistency.
