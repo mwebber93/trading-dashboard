@@ -8,7 +8,7 @@ export type PriceData = {
 	min: number;
 };
 
-export const PRICE_UPDATE_MESSAGE = "latest_price_update";
+export const PRICE_UPDATE_MESSAGE = 'latest_price_update';
 
 export const chartOptions = {
 	chart: {
@@ -62,4 +62,4 @@ export const fetchLatestPrices = async (): Promise<PriceData[] | null> => {
 export const dispatchPriceUpdateEvent = (latestPriceData: PriceData) => {
 	const priceUpdateEvent = new CustomEvent('price-update', { detail: latestPriceData });
 	window.dispatchEvent(priceUpdateEvent);
-}
+};

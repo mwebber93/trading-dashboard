@@ -1,4 +1,4 @@
-import style from "./App.module.css";
+import style from './App.module.css';
 import Chart from './Chart/Chart';
 
 const App = () => {

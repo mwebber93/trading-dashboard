@@ -18,7 +18,7 @@ module.exports = {
 			singleton: true,
 			requiredVersion: deps['react-dom'],
 		},
-		'dayjs': {
+		dayjs: {
 			eager: true,
 			singleton: true,
 			requiredVersion: deps['dayjs'],
