@@ -33,7 +33,7 @@ const Position: FC<Props> = () => {
 		return () => {
 			wsCurrent.close();
 		};
-	}, []);
+	}, [initialisePosition]);
 
 	useEffect(() => {
 		if (!ws.current) return;
@@ -45,7 +45,7 @@ const Position: FC<Props> = () => {
 				initialisePosition();
 			}
 		};
-	}, [positionData]);
+	}, [initialisePosition, positionData]);
 
 	const handlePriceUpdate = useCallback(
 		(e: Event) => {

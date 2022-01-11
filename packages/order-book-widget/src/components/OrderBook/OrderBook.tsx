@@ -25,7 +25,7 @@ const OrderBook: FC<Props> = () => {
 		return () => {
 			wsCurrent.close();
 		};
-	}, []);
+	}, [initialiseOrders]);
 
 	useEffect(() => {
 		if (!ws.current) return;

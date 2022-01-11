@@ -31,7 +31,7 @@ const Chart: FC<Props> = () => {
 		return () => {
 			wsCurrent.close();
 		};
-	}, []);
+	}, [initialiseLatestPrices]);
 
 	useEffect(() => {
 		if (!ws.current) return;

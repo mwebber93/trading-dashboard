@@ -1,4 +1,4 @@
-import { cleanup, render, screen, prettyDOM, waitFor } from '@testing-library/react';
+import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import App from './App';
 import * as positionUtils from './Position/Position.utils';
 
@@ -34,26 +34,27 @@ describe('Position Widget Tests', () => {
 
 		await waitFor(() => {
 			expect(screen.getByText('Position')).toBeTruthy();
-			expect(screen.getByText('Cash available:')).toBeTruthy();
-			expect(screen.getByText('+£1,000.00')).toBeTruthy();
-			expect(screen.getByText('Units held:')).toBeTruthy();
-			expect(screen.getByText('10')).toBeTruthy();
-			expect(screen.getByText('Current price:')).toBeTruthy();
-			expect(screen.getByText('+£2,000.00')).toBeTruthy();
-			expect(screen.getByText('Total value:')).toBeTruthy();
-			expect(screen.getByText('+£20,000.00')).toBeTruthy();
-			expect(screen.getByText('Total cost:')).toBeTruthy();
-			expect(screen.getByText('+£15,000.00')).toBeTruthy();
-			expect(screen.getByText('Day price change:')).toBeTruthy();
-			expect(screen.getByText('+£50.00 (+1.11%)')).toBeTruthy();
-			expect(screen.getByText('Overall price change:')).toBeTruthy();
-			expect(screen.getByText('+£200.00 (+2.22%)')).toBeTruthy();
-			expect(screen.getByText('First deal:')).toBeTruthy();
-			expect(screen.getByText('01/01/2022')).toBeTruthy();
-			expect(screen.getByText('Last deal:')).toBeTruthy();
-			expect(screen.getByText('01/02/2022')).toBeTruthy();
-			expect(screen.getByText('Total deals:')).toBeTruthy();
-			expect(screen.getByText('+£1,000.00')).toBeTruthy();
 		});
+
+		expect(screen.getByText('Cash available:')).toBeTruthy();
+		expect(screen.getByText('+£1,000.00')).toBeTruthy();
+		expect(screen.getByText('Units held:')).toBeTruthy();
+		expect(screen.getByText('10')).toBeTruthy();
+		expect(screen.getByText('Current price:')).toBeTruthy();
+		expect(screen.getByText('+£2,000.00')).toBeTruthy();
+		expect(screen.getByText('Total value:')).toBeTruthy();
+		expect(screen.getByText('+£20,000.00')).toBeTruthy();
+		expect(screen.getByText('Total cost:')).toBeTruthy();
+		expect(screen.getByText('+£15,000.00')).toBeTruthy();
+		expect(screen.getByText('Day price change:')).toBeTruthy();
+		expect(screen.getByText('+£50.00 (+1.11%)')).toBeTruthy();
+		expect(screen.getByText('Overall price change:')).toBeTruthy();
+		expect(screen.getByText('+£200.00 (+2.22%)')).toBeTruthy();
+		expect(screen.getByText('First deal:')).toBeTruthy();
+		expect(screen.getByText('01/01/2022')).toBeTruthy();
+		expect(screen.getByText('Last deal:')).toBeTruthy();
+		expect(screen.getByText('01/02/2022')).toBeTruthy();
+		expect(screen.getByText('Total deals:')).toBeTruthy();
+		expect(screen.getByText('+£1,000.00')).toBeTruthy();
 	});
 });
