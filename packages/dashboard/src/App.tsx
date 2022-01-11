@@ -1,9 +1,9 @@
-import Dashboard from './components/Dashboard/Dashboard';
+import Home from './components/Pages/Home/Home';
 import style from './App.module.css';
 
 const App = () => (
 	<div className={style.Wrapper}>
-		<Dashboard title={'Trading Dashboard'} />
+		<Home title={'Trading Dashboard'} />
 	</div>
 );
 
